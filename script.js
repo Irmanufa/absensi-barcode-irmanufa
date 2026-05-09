@@ -1,6 +1,6 @@
 // ============================================
 // IRMANUFA QR ABSENSI - SCRIPT UTAMA
-// VERSI FINAL - QR CODE TIDAK TERPOTONG
+// VERSI SUPER - RESPONSIF + DOWNLOAD CEPAT
 // ============================================
 
 const CONFIG = {
@@ -196,23 +196,23 @@ function renderTodayScanHistory() {
       <table style="width:100%; border-collapse: collapse;">
         <thead>
           <tr style="background: #f1f5f9;">
-            <th style="padding: 12px; text-align: left;">No</th>
-            <th style="padding: 12px; text-align: left;">Nama</th>
-            <th style="padding: 12px; text-align: left;">Divisi</th>
-            <th style="padding: 12px; text-align: left;">Waktu</th>
-            <th style="padding: 12px; text-align: left;">Aksi</th>
-           </tr>
+            <th style="padding: 10px; text-align: left;">No</th>
+            <th style="padding: 10px; text-align: left;">Nama</th>
+            <th style="padding: 10px; text-align: left;">Divisi</th>
+            <th style="padding: 10px; text-align: left;">Waktu</th>
+            <th style="padding: 10px; text-align: left;">Aksi</th>
+          </tr>
         </thead>
         <tbody>
           ${todayAttendance.map((a, i) => `
             <tr style="border-bottom: 1px solid #e2e8f0;">
-              <td style="padding: 12px;">${i + 1}</td>
-              <td style="padding: 12px;"><strong>${a.memberName}</strong></td>
-              <td style="padding: 12px;">${a.division}</td>
-              <td style="padding: 12px;">${a.time}</td>
-              <td style="padding: 12px;">
-                <button class="btn btn-warning btn-sm" onclick="editAttendanceById(${a.id})" style="padding: 4px 10px; margin-right: 5px;"><i class="fas fa-edit"></i> Edit</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteAttendanceById(${a.id})" style="padding: 4px 10px;"><i class="fas fa-trash"></i> Hapus</button>
+              <td style="padding: 10px;">${i + 1}</td>
+              <td style="padding: 10px;"><strong>${a.memberName}</strong></td>
+              <td style="padding: 10px;">${a.division}</td>
+              <td style="padding: 10px;">${a.time}</td>
+              <td style="padding: 10px;">
+                <button class="btn btn-warning btn-sm" onclick="editAttendanceById(${a.id})" style="padding: 4px 8px; margin-right: 5px;"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteAttendanceById(${a.id})" style="padding: 4px 8px;"><i class="fas fa-trash"></i> Hapus</button>
               </td>
             </tr>
           `).join("")}
@@ -367,7 +367,7 @@ function generateMemberQR() {
   });
 }
 
-// ==================== DOWNLOAD QR CODE (TIDAK TERPOTONG) ====================
+// ==================== DOWNLOAD QR CODE (SUPER CEPAT & TIDAK TERPOTONG) ====================
 function downloadQRAsPNG() {
   if (!AppState.currentQRCanvas || !AppState.currentQRMember) { 
     Toast.warning("Generate QR Code terlebih dahulu!"); 
@@ -378,11 +378,11 @@ function downloadQRAsPNG() {
   const finalCanvas = document.createElement("canvas");
   const ctx = finalCanvas.getContext("2d");
   
-  // UKURAN DIPERBESAR AGAR TIDAK TERPOTONG
+  // UKURAN LEBIH BESAR UNTUK MEMASTIKAN TIDAK TERPOTONG
   const qrSize = 450;
   const padding = 40;
   const width = qrSize + padding * 2;
-  const height = qrSize + 340; // TINGGI DITAMBAH
+  const height = qrSize + 340;
   
   finalCanvas.width = width;
   finalCanvas.height = height;
@@ -412,14 +412,14 @@ function downloadQRAsPNG() {
   // Title data diri
   ctx.fillStyle = "#1e293b";
   ctx.font = "bold 20px 'Inter', sans-serif";
-  ctx.fillText("DATA DIRI ANGGOTA", width / 2, qrSize + 130);
+  ctx.fillText("DATA DIRI ANGGOTA", width / 2, qrSize + 135);
   
   // Garis pemisah
   ctx.beginPath();
   ctx.strokeStyle = "#e2e8f0";
   ctx.lineWidth = 2;
-  ctx.moveTo(padding, qrSize + 145);
-  ctx.lineTo(width - padding, qrSize + 145);
+  ctx.moveTo(padding, qrSize + 155);
+  ctx.lineTo(width - padding, qrSize + 155);
   ctx.stroke();
   
   // Data anggota
@@ -427,7 +427,7 @@ function downloadQRAsPNG() {
   ctx.fillStyle = "#334155";
   ctx.textAlign = "left";
   
-  const startY = qrSize + 175;
+  const startY = qrSize + 185;
   const lineHeight = 32;
   
   ctx.fillText(`Nama Lengkap      : ${member.name}`, padding + 25, startY);
@@ -623,7 +623,7 @@ function renderMemberTable(searchTerm = "") {
       <td style="padding: 10px;"><span class="status-badge ${m.status === "active" ? "status-active" : "status-passive"}">${m.status === "active" ? "Aktif" : "Pasif"}</span></td>
       <td style="padding: 10px;"><span class="status-badge ${todayAttended.includes(m.id) ? "status-hadir" : "status-belum"}">${todayAttended.includes(m.id) ? "Hadir" : "Belum"}</span></td>
       <td style="padding: 10px;">
-        <button class="btn btn-warning btn-sm" onclick="showEditMemberModal('${m.id}')" style="padding: 4px 8px;"><i class="fas fa-edit"></i></button>
+        <button class="btn btn-warning btn-sm" onclick="showEditMemberModal('${m.id}')" style="padding: 4px 8px; margin-right: 5px;"><i class="fas fa-edit"></i></button>
         <button class="btn btn-danger btn-sm" onclick="showDeleteConfirmModal('${m.id}')" style="padding: 4px 8px;"><i class="fas fa-trash"></i></button>
       </td>
     </tr>
@@ -639,12 +639,9 @@ function renderTopMembers() {
     return; 
   } 
   container.innerHTML = stats.topMembers.map((m, i) => `
-    <div class="ranking-item">
-      <div class="rank-number" style="background: ${i === 0 ? "#f59e0b" : i === 1 ? "#94a3b8" : "#059669"};">${i + 1}</div>
-      <div class="rank-info">
-        <h4>${m.name}</h4>
-        <div class="rank-stats"><span><i class="fas fa-check-circle"></i> ${m.count} kali</span><span><i class="fas fa-users"></i> ${m.division}</span></div>
-      </div>
+    <div class="ranking-item" style="display: flex; align-items: center; padding: 12px; background: #f1f5f9; border-radius: 12px; margin-bottom: 8px;">
+      <div class="rank-number" style="width: 36px; height: 36px; background: ${i === 0 ? "#f59e0b" : i === 1 ? "#94a3b8" : "#059669"}; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 12px;">${i + 1}</div>
+      <div class="rank-info" style="flex: 1;"><h4 style="margin-bottom: 4px;">${m.name}</h4><div class="rank-stats" style="display: flex; gap: 16px; font-size: 11px; color: #64748b;"><span><i class="fas fa-check-circle"></i> ${m.count} kali</span><span><i class="fas fa-users"></i> ${m.division}</span></div></div>
     </div>
   `).join(""); 
 }
@@ -658,13 +655,9 @@ function renderRecentAttendance() {
     return; 
   } 
   container.innerHTML = recent.map(a => `
-    <div class="ranking-item">
-      <div class="rank-number" style="background: #10b981;">✓</div>
-      <div class="rank-info">
-        <h4>${a.memberName}</h4>
-        <div class="rank-stats"><span><i class="fas fa-clock"></i> ${a.time}</span><span><i class="fas fa-calendar"></i> ${a.date.split(",")[0]}</span></div>
-        ${a.kegiatan ? `<div class="rank-stats"><span><i class="fas fa-tag"></i> ${a.kegiatan.substring(0, 30)}</span></div>` : ""}
-      </div>
+    <div class="ranking-item" style="display: flex; align-items: center; padding: 12px; background: #f1f5f9; border-radius: 12px; margin-bottom: 8px;">
+      <div class="rank-number" style="width: 36px; height: 36px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 12px;">✓</div>
+      <div class="rank-info" style="flex: 1;"><h4 style="margin-bottom: 4px;">${a.memberName}</h4><div class="rank-stats" style="display: flex; gap: 16px; font-size: 11px; color: #64748b;"><span><i class="fas fa-clock"></i> ${a.time}</span><span><i class="fas fa-calendar"></i> ${a.date.split(",")[0]}</span></div>${a.kegiatan ? `<div class="rank-stats" style="font-size: 11px; color: #64748b; margin-top: 4px;"><i class="fas fa-tag"></i> ${a.kegiatan.substring(0, 30)}</div>` : ""}</div>
     </div>
   `).join(""); 
 }
@@ -1013,17 +1006,17 @@ function renderLoginPage() {
         
         <div class="user-selector">
           <div id="user-admin" class="user-option active" onclick="selectUser('admin')">
-            <img src="admin.png" class="user-avatar-img" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'%3E%3Ccircle cx=\\'50\\' cy=\\'50\\' r=\\'50\\' fill=\\'%23e2e8f0\\'/%3E%3Ctext x=\\'50\\' y=\\'67\\' text-anchor=\\'middle\\' fill=\\'%2364748b\\' font-size=\\'45\\' font-family=\\'Arial\\'%3E👤%3C/text%3E%3C/svg%3E'">
+            <img src="admin.png" class="user-avatar-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2750%27 fill=%27%23e2e8f0%27/%3E%3Ctext x=%2750%27 y=%2765%27 text-anchor=%27middle%27 fill=%27%2364748b%27 font-size=%2745%27 font-family=%27Arial%27%3E👤%3C/text%3E%3C/svg%3E'">
             <div class="user-name">Admin</div>
             <div class="user-role">Super Admin</div>
           </div>
           <div id="user-tasya" class="user-option" onclick="selectUser('tasya')">
-            <img src="tasya.png" class="user-avatar-img" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'%3E%3Ccircle cx=\\'50\\' cy=\\'50\\' r=\\'50\\' fill=\\'%23e2e8f0\\'/%3E%3Ctext x=\\'50\\' y=\\'67\\' text-anchor=\\'middle\\' fill=\\'%2364748b\\' font-size=\\'45\\' font-family=\\'Arial\\'%3E👩%3C/text%3E%3C/svg%3E'">
+            <img src="tasya.png" class="user-avatar-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2750%27 fill=%27%23e2e8f0%27/%3E%3Ctext x=%2750%27 y=%2765%27 text-anchor=%27middle%27 fill=%27%2364748b%27 font-size=%2745%27 font-family=%27Arial%27%3E👩%3C/text%3E%3C/svg%3E'">
             <div class="user-name">Tasya</div>
             <div class="user-role">Sekretaris I</div>
           </div>
           <div id="user-lidya" class="user-option" onclick="selectUser('lidya')">
-            <img src="lidya.png" class="user-avatar-img" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'%3E%3Ccircle cx=\\'50\\' cy=\\'50\\' r=\\'50\\' fill=\\'%23e2e8f0\\'/%3E%3Ctext x=\\'50\\' y=\\'67\\' text-anchor=\\'middle\\' fill=\\'%2364748b\\' font-size=\\'45\\' font-family=\\'Arial\\'%3E👩%3C/text%3E%3C/svg%3E'">
+            <img src="lidya.png" class="user-avatar-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ccircle cx=%2750%27 cy=%2750%27 r=%2750%27 fill=%27%23e2e8f0%27/%3E%3Ctext x=%2750%27 y=%2765%27 text-anchor=%27middle%27 fill=%27%2364748b%27 font-size=%2745%27 font-family=%27Arial%27%3E👩%3C/text%3E%3C/svg%3E'">
             <div class="user-name">Lidya</div>
             <div class="user-role">Sekretaris II</div>
           </div>
@@ -1055,10 +1048,6 @@ function renderLoginPage() {
       </div>
     </div>
   `;
-  
-  // Set active user
-  document.querySelectorAll(".user-option").forEach(opt => opt.classList.remove("active"));
-  document.getElementById(`user-${selectedUser}`).classList.add("active");
 }
 
 // ==================== EXPOSE GLOBALS ====================
