@@ -1005,33 +1005,60 @@ function renderLoginPage() {
   document.getElementById("app").innerHTML = `
     <div class="login-container">
       <div class="login-card">
-        <div class="login-logo"><div class="logo-icon"><i class="fas fa-mosque"></i></div><h1>IRMANUFA QR Absensi</h1><p>Sistem Absensi Digital Berbasis QR Code</p></div>
+        <div class="login-logo">
+          <div class="logo-icon"><i class="fas fa-mosque"></i></div>
+          <h1>IRMANUFA QR Absensi</h1>
+          <p>Sistem Absensi Digital Berbasis QR Code</p>
+        </div>
+        
         <div class="user-selector">
           <div id="user-admin" class="user-option active" onclick="selectUser('admin')">
-            <img src="admin.png" alt="Admin" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:55px; height:55px; border-radius:50%; background:#e2e8f0; margin:0 auto 8px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-tie\" style=\"font-size: 28px; color:#64748b;\"></i></div>'">
+            <img src="admin.png" class="user-avatar-img" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'%3E%3Ccircle cx=\\'50\\' cy=\\'50\\' r=\\'50\\' fill=\\'%23e2e8f0\\'/%3E%3Ctext x=\\'50\\' y=\\'67\\' text-anchor=\\'middle\\' fill=\\'%2364748b\\' font-size=\\'45\\' font-family=\\'Arial\\'%3E👤%3C/text%3E%3C/svg%3E'">
             <div class="user-name">Admin</div>
             <div class="user-role">Super Admin</div>
           </div>
           <div id="user-tasya" class="user-option" onclick="selectUser('tasya')">
-            <img src="tasya.png" alt="Tasya Amelia" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:55px; height:55px; border-radius:50%; background:#e2e8f0; margin:0 auto 8px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-circle\" style=\"font-size: 28px; color:#64748b;\"></i></div>'">
-            <div class="user-name">Tasya Amelia</div>
+            <img src="tasya.png" class="user-avatar-img" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'%3E%3Ccircle cx=\\'50\\' cy=\\'50\\' r=\\'50\\' fill=\\'%23e2e8f0\\'/%3E%3Ctext x=\\'50\\' y=\\'67\\' text-anchor=\\'middle\\' fill=\\'%2364748b\\' font-size=\\'45\\' font-family=\\'Arial\\'%3E👩%3C/text%3E%3C/svg%3E'">
+            <div class="user-name">Tasya</div>
             <div class="user-role">Sekretaris I</div>
           </div>
           <div id="user-lidya" class="user-option" onclick="selectUser('lidya')">
-            <img src="lidya.png" alt="Lidya Febrianti" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:55px; height:55px; border-radius:50%; background:#e2e8f0; margin:0 auto 8px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-circle\" style=\"font-size: 28px; color:#64748b;\"></i></div>'">
-            <div class="user-name">Lidya Febrianti</div>
+            <img src="lidya.png" class="user-avatar-img" onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=\\'http://www.w3.org/2000/svg\\' viewBox=\\'0 0 100 100\\'%3E%3Ccircle cx=\\'50\\' cy=\\'50\\' r=\\'50\\' fill=\\'%23e2e8f0\\'/%3E%3Ctext x=\\'50\\' y=\\'67\\' text-anchor=\\'middle\\' fill=\\'%2364748b\\' font-size=\\'45\\' font-family=\\'Arial\\'%3E👩%3C/text%3E%3C/svg%3E'">
+            <div class="user-name">Lidya</div>
             <div class="user-role">Sekretaris II</div>
           </div>
         </div>
+        
         <form onsubmit="return handleLogin(event)">
-          <div class="input-group"><label><i class="fas fa-lock"></i> Password</label><div class="password-container"><input type="password" id="password" placeholder="Masukkan password" required><button type="button" class="toggle-password" onclick="togglePassword()"><i class="fas fa-eye"></i></button></div></div>
-          <div class="features"><div class="feature"><i class="fas fa-qrcode"></i><span>Scan QR Code</span></div><div class="feature"><i class="fas fa-chart-line"></i><span>Real-time Update</span></div><div class="feature"><i class="fas fa-trophy"></i><span>Ranking Anggota</span></div><div class="feature"><i class="fas fa-file-pdf"></i><span>Laporan PDF/Excel/WA</span></div></div>
+          <div class="input-group">
+            <label><i class="fas fa-lock"></i> Password</label>
+            <div class="password-container">
+              <input type="password" id="password" placeholder="Masukkan password" required>
+              <button type="button" class="toggle-password" onclick="togglePassword()"><i class="fas fa-eye"></i></button>
+            </div>
+          </div>
+          
+          <div class="features">
+            <div class="feature"><i class="fas fa-qrcode"></i><span>Scan QR Code</span></div>
+            <div class="feature"><i class="fas fa-chart-line"></i><span>Real-time Update</span></div>
+            <div class="feature"><i class="fas fa-trophy"></i><span>Ranking Anggota</span></div>
+            <div class="feature"><i class="fas fa-file-pdf"></i><span>Laporan PDF/Excel/WA</span></div>
+          </div>
+          
           <button type="submit" class="login-btn"><i class="fas fa-sign-in-alt"></i> MASUK</button>
         </form>
-        <div class="login-footer"><p>IRMANUFA Kabinet Golden Generation 2027-2029</p><p style="font-size: 10px; margin-top: 8px;">Password: admin123 | tasya123 | lidya123</p></div>
+        
+        <div class="login-footer">
+          <p>IRMANUFA Kabinet Golden Generation 2027-2029</p>
+          <p style="font-size: 10px; margin-top: 8px;">Password: admin123 | tasya123 | lidya123</p>
+        </div>
       </div>
     </div>
   `;
+  
+  // Set active user
+  document.querySelectorAll(".user-option").forEach(opt => opt.classList.remove("active"));
+  document.getElementById(`user-${selectedUser}`).classList.add("active");
 }
 
 // ==================== EXPOSE GLOBALS ====================
