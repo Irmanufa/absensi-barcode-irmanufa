@@ -1,6 +1,6 @@
 // ============================================
 // IRMANUFA QR ABSENSI - SCRIPT UTAMA
-// VERSI FINAL - FULLY FIXED
+// VERSI FINAL - QR CODE TIDAK TERPOTONG
 // ============================================
 
 const CONFIG = {
@@ -193,7 +193,7 @@ function renderTodayScanHistory() {
   
   container.innerHTML = `
     <div style="overflow-x: auto;">
-      <table class="scan-history-table" style="width:100%; border-collapse: collapse;">
+      <table style="width:100%; border-collapse: collapse;">
         <thead>
           <tr style="background: #f1f5f9;">
             <th style="padding: 12px; text-align: left;">No</th>
@@ -201,7 +201,7 @@ function renderTodayScanHistory() {
             <th style="padding: 12px; text-align: left;">Divisi</th>
             <th style="padding: 12px; text-align: left;">Waktu</th>
             <th style="padding: 12px; text-align: left;">Aksi</th>
-          </tr>
+           </tr>
         </thead>
         <tbody>
           ${todayAttendance.map((a, i) => `
@@ -367,46 +367,83 @@ function generateMemberQR() {
   });
 }
 
+// ==================== DOWNLOAD QR CODE (TIDAK TERPOTONG) ====================
 function downloadQRAsPNG() {
-  if (!AppState.currentQRCanvas || !AppState.currentQRMember) { Toast.warning("Generate QR Code terlebih dahulu!"); return; }
+  if (!AppState.currentQRCanvas || !AppState.currentQRMember) { 
+    Toast.warning("Generate QR Code terlebih dahulu!"); 
+    return; 
+  }
+  
   const member = AppState.currentQRMember;
   const finalCanvas = document.createElement("canvas");
   const ctx = finalCanvas.getContext("2d");
-  const qrSize = 400, padding = 30;
+  
+  // Ukuran yang lebih besar agar tidak terpotong
+  const qrSize = 400;
+  const padding = 40;
   const width = qrSize + padding * 2;
-  const height = qrSize + 200;
+  const height = qrSize + 260; // Tinggi cukup untuk semua teks
+  
   finalCanvas.width = width;
   finalCanvas.height = height;
   
+  // Background putih
   ctx.fillStyle = "#ffffff";
   ctx.fillRect(0, 0, width, height);
+  
+  // Border hijau
   ctx.strokeStyle = "#059669";
-  ctx.lineWidth = 3;
-  ctx.strokeRect(5, 5, width - 10, height - 10);
+  ctx.lineWidth = 4;
+  ctx.strokeRect(10, 10, width - 20, height - 20);
+  
+  // Header hijau
   ctx.fillStyle = "#059669";
-  ctx.fillRect(0, 0, width, 50);
+  ctx.fillRect(0, 0, width, 55);
+  
+  // Teks header
   ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 18px Inter";
+  ctx.font = "bold 22px 'Inter', sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("IRMANUFA QR CODE", width / 2, 33);
-  ctx.drawImage(AppState.currentQRCanvas, padding, 60, qrSize, qrSize);
+  ctx.fillText("IRMANUFA QR CODE", width / 2, 38);
+  
+  // QR Code
+  ctx.drawImage(AppState.currentQRCanvas, padding, 70, qrSize, qrSize);
+  
+  // Title data diri
   ctx.fillStyle = "#1e293b";
-  ctx.font = "bold 14px Inter";
-  ctx.fillText("DATA DIRI ANGGOTA", width / 2, qrSize + 85);
-  ctx.font = "12px Inter";
+  ctx.font = "bold 16px 'Inter', sans-serif";
+  ctx.fillText("DATA DIRI ANGGOTA", width / 2, qrSize + 105);
+  
+  // Garis pemisah
+  ctx.beginPath();
+  ctx.strokeStyle = "#e2e8f0";
+  ctx.lineWidth = 1;
+  ctx.moveTo(padding, qrSize + 115);
+  ctx.lineTo(width - padding, qrSize + 115);
+  ctx.stroke();
+  
+  // Data anggota
+  ctx.font = "13px 'Inter', sans-serif";
   ctx.fillStyle = "#334155";
   ctx.textAlign = "left";
-  const startY = qrSize + 110;
-  ctx.fillText(`Nama: ${member.name}`, padding + 20, startY);
-  ctx.fillText(`Jenis Kelamin: ${getGenderText(member.gender)}`, padding + 20, startY + 22);
-  ctx.fillText(`Kode Member: ${member.code}`, padding + 20, startY + 44);
-  ctx.fillText(`Jabatan: ${member.position || "Anggota"}`, padding + 20, startY + 66);
-  ctx.fillText(`Divisi: ${member.division}`, padding + 20, startY + 88);
-  ctx.fillStyle = "#94a3b8";
-  ctx.font = "10px Inter";
-  ctx.textAlign = "center";
-  ctx.fillText(`Dicetak: ${formatDate()}`, width / 2, height - 15);
   
+  const startY = qrSize + 135;
+  const lineHeight = 24;
+  
+  ctx.fillText(`Nama Lengkap      : ${member.name}`, padding + 15, startY);
+  ctx.fillText(`Jenis Kelamin     : ${getGenderText(member.gender)}`, padding + 15, startY + lineHeight);
+  ctx.fillText(`Kode Member       : ${member.code}`, padding + 15, startY + lineHeight * 2);
+  ctx.fillText(`Jabatan           : ${member.position || "Anggota"}`, padding + 15, startY + lineHeight * 3);
+  ctx.fillText(`Divisi            : ${member.division}`, padding + 15, startY + lineHeight * 4);
+  ctx.fillText(`Status            : AKTIF`, padding + 15, startY + lineHeight * 5);
+  
+  // Footer
+  ctx.fillStyle = "#94a3b8";
+  ctx.font = "10px 'Inter', sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText(`Dicetak: ${formatDate()}`, width / 2, height - 18);
+  
+  // Download
   const link = document.createElement("a");
   link.download = `QR_${member.name.replace(/\s/g, "_")}_${member.code}.png`;
   link.href = finalCanvas.toDataURL();
@@ -415,37 +452,51 @@ function downloadQRAsPNG() {
 }
 
 function downloadQRAsPDF() {
-  if (!AppState.currentQRCanvas || !AppState.currentQRMember) { Toast.warning("Generate QR Code terlebih dahulu!"); return; }
+  if (!AppState.currentQRCanvas || !AppState.currentQRMember) { 
+    Toast.warning("Generate QR Code terlebih dahulu!"); 
+    return; 
+  }
+  
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: "mm", format: "a4" });
   const member = AppState.currentQRMember;
+  
+  // Header
   doc.setFillColor(5, 150, 105);
-  doc.rect(0, 0, 210, 35, "F");
+  doc.rect(0, 0, 210, 40, "F");
   doc.setTextColor(255, 255, 255);
-  doc.setFontSize(16);
+  doc.setFontSize(18);
   doc.text("IRMANUFA QR ABSENSI", 105, 18, { align: "center" });
   doc.setFontSize(10);
-  doc.text("Ikatan Remaja Masjid Jami Nurul Falah", 105, 28, { align: "center" });
+  doc.text("Ikatan Remaja Masjid Jami Nurul Falah", 105, 30, { align: "center" });
+  
+  // QR Code (ukuran lebih kecil untuk PDF)
   const qrDataUrl = AppState.currentQRCanvas.toDataURL();
-  doc.addImage(qrDataUrl, "PNG", 55, 45, 80, 80);
+  doc.addImage(qrDataUrl, "PNG", 65, 50, 80, 80);
+  
+  // Data diri
   doc.setTextColor(0, 0, 0);
-  doc.setFontSize(12);
+  doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
-  doc.text("DATA DIRI ANGGOTA", 105, 140, { align: "center" });
-  doc.setFontSize(10);
+  doc.text("DATA DIRI ANGGOTA", 105, 150, { align: "center" });
+  
+  doc.setFontSize(11);
   doc.setFont("helvetica", "normal");
-  doc.text(`Nama Lengkap      : ${member.name}`, 25, 155);
-  doc.text(`Jenis Kelamin     : ${getGenderText(member.gender)}`, 25, 165);
-  doc.text(`Kode Member       : ${member.code}`, 25, 175);
-  doc.text(`Jabatan           : ${member.position || "Anggota"}`, 25, 185);
-  doc.text(`Divisi            : ${member.division}`, 25, 195);
-  doc.text(`Status            : AKTIF`, 25, 205);
+  doc.text(`Nama Lengkap      : ${member.name}`, 25, 170);
+  doc.text(`Jenis Kelamin     : ${getGenderText(member.gender)}`, 25, 180);
+  doc.text(`Kode Member       : ${member.code}`, 25, 190);
+  doc.text(`Jabatan           : ${member.position || "Anggota"}`, 25, 200);
+  doc.text(`Divisi            : ${member.division}`, 25, 210);
+  doc.text(`Status            : AKTIF`, 25, 220);
+  
+  // Footer
   doc.setFillColor(5, 150, 105);
   doc.rect(0, 270, 210, 27, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(8);
   doc.text(`Dicetak: ${formatDate()}`, 105, 282, { align: "center" });
   doc.text("Sistem Absensi Digital IRMANUFA - Kabinet Golden Generation 2027-2029", 105, 289, { align: "center" });
+  
   doc.save(`QR_${member.name.replace(/\s/g, "_")}_${member.code}.pdf`);
   Toast.success("QR Code PDF berhasil diunduh!");
 }
@@ -944,17 +995,17 @@ function renderLoginPage() {
         <div class="login-logo"><div class="logo-icon"><i class="fas fa-mosque"></i></div><h1>IRMANUFA QR Absensi</h1><p>Sistem Absensi Digital Berbasis QR Code</p></div>
         <div class="user-selector">
           <div id="user-admin" class="user-option active" onclick="selectUser('admin')">
-            <img src="admin.png" alt="Admin" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\\"width:60px; height:60px; border-radius:50%; background:#e2e8f0; margin:0 auto 10px; display:flex; align-items:center; justify-content:center;\\"><i class=\\"fas fa-user-tie\\" style=\\"font-size: 32px; color:#64748b;\\"></i></div>'">
+            <img src="admin.png" alt="Admin" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:60px; height:60px; border-radius:50%; background:#e2e8f0; margin:0 auto 10px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-tie\" style=\"font-size: 32px; color:#64748b;\"></i></div>'">
             <div class="user-name">Admin</div>
             <div class="user-role">Super Admin</div>
           </div>
           <div id="user-tasya" class="user-option" onclick="selectUser('tasya')">
-            <img src="tasya.png" alt="Tasya Amelia" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\\"width:60px; height:60px; border-radius:50%; background:#e2e8f0; margin:0 auto 10px; display:flex; align-items:center; justify-content:center;\\"><i class=\\"fas fa-user-circle\\" style=\\"font-size: 32px; color:#64748b;\\"></i></div>'">
+            <img src="tasya.png" alt="Tasya Amelia" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:60px; height:60px; border-radius:50%; background:#e2e8f0; margin:0 auto 10px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-circle\" style=\"font-size: 32px; color:#64748b;\"></i></div>'">
             <div class="user-name">Tasya Amelia</div>
             <div class="user-role">Sekretaris I</div>
           </div>
           <div id="user-lidya" class="user-option" onclick="selectUser('lidya')">
-            <img src="lidya.png" alt="Lidya Febrianti" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\\"width:60px; height:60px; border-radius:50%; background:#e2e8f0; margin:0 auto 10px; display:flex; align-items:center; justify-content:center;\\"><i class=\\"fas fa-user-circle\\" style=\\"font-size: 32px; color:#64748b;\\"></i></div>'">
+            <img src="lidya.png" alt="Lidya Febrianti" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:60px; height:60px; border-radius:50%; background:#e2e8f0; margin:0 auto 10px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-circle\" style=\"font-size: 32px; color:#64748b;\"></i></div>'">
             <div class="user-name">Lidya Febrianti</div>
             <div class="user-role">Sekretaris II</div>
           </div>
