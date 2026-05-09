@@ -211,8 +211,8 @@ function renderTodayScanHistory() {
               <td style="padding: 12px;">${a.division}</td>
               <td style="padding: 12px;">${a.time}</td>
               <td style="padding: 12px;">
-                <button class="btn btn-warning btn-sm" onclick="editAttendanceById(${a.id})" style="padding: 4px 10px; margin-right: 5px;"><i class="fas fa-edit"></i></button>
-                <button class="btn btn-danger btn-sm" onclick="deleteAttendanceById(${a.id})" style="padding: 4px 10px;"><i class="fas fa-trash"></i></button>
+                <button class="btn btn-warning btn-sm" onclick="editAttendanceById(${a.id})" style="padding: 4px 10px; margin-right: 5px;"><i class="fas fa-edit"></i> Edit</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteAttendanceById(${a.id})" style="padding: 4px 10px;"><i class="fas fa-trash"></i> Hapus</button>
               </td>
             </tr>
           `).join("")}
@@ -332,7 +332,7 @@ function generateMemberQR() {
   });
   
   QRCode.toCanvas(document.createElement("canvas"), qrData, {
-    width: 300,
+    width: 400,
     margin: 2,
     color: { dark: "#059669", light: "#ffffff" }
   }, function(error, canvas) {
@@ -378,11 +378,11 @@ function downloadQRAsPNG() {
   const finalCanvas = document.createElement("canvas");
   const ctx = finalCanvas.getContext("2d");
   
-  // Ukuran yang lebih besar agar tidak terpotong
-  const qrSize = 400;
+  // UKURAN DIPERBESAR AGAR TIDAK TERPOTONG
+  const qrSize = 450;
   const padding = 40;
   const width = qrSize + padding * 2;
-  const height = qrSize + 260; // Tinggi cukup untuk semua teks
+  const height = qrSize + 340; // TINGGI DITAMBAH
   
   finalCanvas.width = width;
   finalCanvas.height = height;
@@ -393,55 +393,57 @@ function downloadQRAsPNG() {
   
   // Border hijau
   ctx.strokeStyle = "#059669";
-  ctx.lineWidth = 4;
+  ctx.lineWidth = 5;
   ctx.strokeRect(10, 10, width - 20, height - 20);
   
   // Header hijau
   ctx.fillStyle = "#059669";
-  ctx.fillRect(0, 0, width, 55);
+  ctx.fillRect(0, 0, width, 65);
   
   // Teks header
   ctx.fillStyle = "#ffffff";
-  ctx.font = "bold 22px 'Inter', sans-serif";
+  ctx.font = "bold 26px 'Inter', sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText("IRMANUFA QR CODE", width / 2, 38);
+  ctx.fillText("IRMANUFA QR CODE", width / 2, 42);
   
   // QR Code
-  ctx.drawImage(AppState.currentQRCanvas, padding, 70, qrSize, qrSize);
+  ctx.drawImage(AppState.currentQRCanvas, padding, 80, qrSize, qrSize);
   
   // Title data diri
   ctx.fillStyle = "#1e293b";
-  ctx.font = "bold 16px 'Inter', sans-serif";
-  ctx.fillText("DATA DIRI ANGGOTA", width / 2, qrSize + 105);
+  ctx.font = "bold 20px 'Inter', sans-serif";
+  ctx.fillText("DATA DIRI ANGGOTA", width / 2, qrSize + 130);
   
   // Garis pemisah
   ctx.beginPath();
   ctx.strokeStyle = "#e2e8f0";
-  ctx.lineWidth = 1;
-  ctx.moveTo(padding, qrSize + 115);
-  ctx.lineTo(width - padding, qrSize + 115);
+  ctx.lineWidth = 2;
+  ctx.moveTo(padding, qrSize + 145);
+  ctx.lineTo(width - padding, qrSize + 145);
   ctx.stroke();
   
   // Data anggota
-  ctx.font = "13px 'Inter', sans-serif";
+  ctx.font = "15px 'Inter', sans-serif";
   ctx.fillStyle = "#334155";
   ctx.textAlign = "left";
   
-  const startY = qrSize + 135;
-  const lineHeight = 24;
+  const startY = qrSize + 175;
+  const lineHeight = 32;
   
-  ctx.fillText(`Nama Lengkap      : ${member.name}`, padding + 15, startY);
-  ctx.fillText(`Jenis Kelamin     : ${getGenderText(member.gender)}`, padding + 15, startY + lineHeight);
-  ctx.fillText(`Kode Member       : ${member.code}`, padding + 15, startY + lineHeight * 2);
-  ctx.fillText(`Jabatan           : ${member.position || "Anggota"}`, padding + 15, startY + lineHeight * 3);
-  ctx.fillText(`Divisi            : ${member.division}`, padding + 15, startY + lineHeight * 4);
-  ctx.fillText(`Status            : AKTIF`, padding + 15, startY + lineHeight * 5);
+  ctx.fillText(`Nama Lengkap      : ${member.name}`, padding + 25, startY);
+  ctx.fillText(`Jenis Kelamin     : ${getGenderText(member.gender)}`, padding + 25, startY + lineHeight);
+  ctx.fillText(`Kode Member       : ${member.code}`, padding + 25, startY + lineHeight * 2);
+  ctx.fillText(`Jabatan           : ${member.position || "Anggota"}`, padding + 25, startY + lineHeight * 3);
+  ctx.fillText(`Divisi            : ${member.division}`, padding + 25, startY + lineHeight * 4);
+  ctx.fillText(`Status            : AKTIF`, padding + 25, startY + lineHeight * 5);
   
   // Footer
   ctx.fillStyle = "#94a3b8";
-  ctx.font = "10px 'Inter', sans-serif";
+  ctx.font = "12px 'Inter', sans-serif";
   ctx.textAlign = "center";
-  ctx.fillText(`Dicetak: ${formatDate()}`, width / 2, height - 18);
+  ctx.fillText(`Dicetak: ${formatDate()}`, width / 2, height - 28);
+  ctx.font = "10px 'Inter', sans-serif";
+  ctx.fillText("Sistem Absensi Digital IRMANUFA - Kabinet Golden Generation 2027-2029", width / 2, height - 12);
   
   // Download
   const link = document.createElement("a");
@@ -463,31 +465,33 @@ function downloadQRAsPDF() {
   
   // Header
   doc.setFillColor(5, 150, 105);
-  doc.rect(0, 0, 210, 40, "F");
+  doc.rect(0, 0, 210, 45, "F");
   doc.setTextColor(255, 255, 255);
   doc.setFontSize(18);
-  doc.text("IRMANUFA QR ABSENSI", 105, 18, { align: "center" });
+  doc.text("IRMANUFA QR ABSENSI", 105, 22, { align: "center" });
   doc.setFontSize(10);
-  doc.text("Ikatan Remaja Masjid Jami Nurul Falah", 105, 30, { align: "center" });
+  doc.text("Ikatan Remaja Masjid Jami Nurul Falah", 105, 34, { align: "center" });
   
-  // QR Code (ukuran lebih kecil untuk PDF)
+  // QR Code
   const qrDataUrl = AppState.currentQRCanvas.toDataURL();
-  doc.addImage(qrDataUrl, "PNG", 65, 50, 80, 80);
+  doc.addImage(qrDataUrl, "PNG", 55, 55, 100, 100);
   
   // Data diri
   doc.setTextColor(0, 0, 0);
   doc.setFontSize(14);
   doc.setFont("helvetica", "bold");
-  doc.text("DATA DIRI ANGGOTA", 105, 150, { align: "center" });
+  doc.text("DATA DIRI ANGGOTA", 105, 175, { align: "center" });
   
   doc.setFontSize(11);
   doc.setFont("helvetica", "normal");
-  doc.text(`Nama Lengkap      : ${member.name}`, 25, 170);
-  doc.text(`Jenis Kelamin     : ${getGenderText(member.gender)}`, 25, 180);
-  doc.text(`Kode Member       : ${member.code}`, 25, 190);
-  doc.text(`Jabatan           : ${member.position || "Anggota"}`, 25, 200);
-  doc.text(`Divisi            : ${member.division}`, 25, 210);
-  doc.text(`Status            : AKTIF`, 25, 220);
+  
+  let y = 195;
+  doc.text(`Nama Lengkap      : ${member.name}`, 25, y);
+  doc.text(`Jenis Kelamin     : ${getGenderText(member.gender)}`, 25, y + 10);
+  doc.text(`Kode Member       : ${member.code}`, 25, y + 20);
+  doc.text(`Jabatan           : ${member.position || "Anggota"}`, 25, y + 30);
+  doc.text(`Divisi            : ${member.division}`, 25, y + 40);
+  doc.text(`Status            : AKTIF`, 25, y + 50);
   
   // Footer
   doc.setFillColor(5, 150, 105);
@@ -612,15 +616,15 @@ function renderMemberTable(searchTerm = "") {
   const todayAttended = getTodayAttendance().map(a => a.memberId);
   container.innerHTML = members.map(m => `
     <tr>
-      <td style="padding: 12px;">${m.code}</td>
-      <td style="padding: 12px;"><strong>${m.name}</strong><br><small>${getGenderText(m.gender)}</small></td>
-      <td style="padding: 12px;">${m.division}</td>
-      <td style="padding: 12px;">${m.position || "Anggota"}</td>
-      <td style="padding: 12px;"><span class="status-badge ${m.status === "active" ? "status-active" : "status-passive"}">${m.status === "active" ? "Aktif" : "Pasif"}</span></td>
-      <td style="padding: 12px;"><span class="status-badge ${todayAttended.includes(m.id) ? "status-hadir" : "status-belum"}">${todayAttended.includes(m.id) ? "Hadir" : "Belum"}</span></td>
-      <td style="padding: 12px;">
-        <button class="btn btn-warning btn-sm" onclick="showEditMemberModal('${m.id}')" style="padding: 4px 10px; margin-right: 5px;"><i class="fas fa-edit"></i></button>
-        <button class="btn btn-danger btn-sm" onclick="showDeleteConfirmModal('${m.id}')" style="padding: 4px 10px;"><i class="fas fa-trash"></i></button>
+      <td style="padding: 10px;">${m.code}</td>
+      <td style="padding: 10px;"><strong>${m.name}</strong><br><small>${getGenderText(m.gender)}</small></td>
+      <td style="padding: 10px;">${m.division}</td>
+      <td style="padding: 10px;">${m.position || "Anggota"}</td>
+      <td style="padding: 10px;"><span class="status-badge ${m.status === "active" ? "status-active" : "status-passive"}">${m.status === "active" ? "Aktif" : "Pasif"}</span></td>
+      <td style="padding: 10px;"><span class="status-badge ${todayAttended.includes(m.id) ? "status-hadir" : "status-belum"}">${todayAttended.includes(m.id) ? "Hadir" : "Belum"}</span></td>
+      <td style="padding: 10px;">
+        <button class="btn btn-warning btn-sm" onclick="showEditMemberModal('${m.id}')" style="padding: 4px 8px;"><i class="fas fa-edit"></i></button>
+        <button class="btn btn-danger btn-sm" onclick="showDeleteConfirmModal('${m.id}')" style="padding: 4px 8px;"><i class="fas fa-trash"></i></button>
       </td>
     </tr>
   `).join("");
@@ -635,9 +639,12 @@ function renderTopMembers() {
     return; 
   } 
   container.innerHTML = stats.topMembers.map((m, i) => `
-    <div style="display: flex; align-items: center; padding: 12px; background: #f1f5f9; border-radius: 12px; margin-bottom: 8px;">
-      <div style="width: 36px; height: 36px; background: ${i === 0 ? "#f59e0b" : i === 1 ? "#94a3b8" : "#059669"}; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 12px;">${i + 1}</div>
-      <div style="flex:1;"><h4 style="margin-bottom: 4px;">${m.name}</h4><div style="display: flex; gap: 16px; font-size: 11px; color: #64748b;"><span><i class="fas fa-check-circle"></i> ${m.count} kali</span><span><i class="fas fa-users"></i> ${m.division}</span></div></div>
+    <div class="ranking-item">
+      <div class="rank-number" style="background: ${i === 0 ? "#f59e0b" : i === 1 ? "#94a3b8" : "#059669"};">${i + 1}</div>
+      <div class="rank-info">
+        <h4>${m.name}</h4>
+        <div class="rank-stats"><span><i class="fas fa-check-circle"></i> ${m.count} kali</span><span><i class="fas fa-users"></i> ${m.division}</span></div>
+      </div>
     </div>
   `).join(""); 
 }
@@ -651,9 +658,13 @@ function renderRecentAttendance() {
     return; 
   } 
   container.innerHTML = recent.map(a => `
-    <div style="display: flex; align-items: center; padding: 12px; background: #f1f5f9; border-radius: 12px; margin-bottom: 8px;">
-      <div style="width: 36px; height: 36px; background: #10b981; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; margin-right: 12px;">✓</div>
-      <div style="flex:1;"><h4 style="margin-bottom: 4px;">${a.memberName}</h4><div style="display: flex; gap: 16px; font-size: 11px; color: #64748b;"><span><i class="fas fa-clock"></i> ${a.time}</span><span><i class="fas fa-calendar"></i> ${a.date.split(",")[0]}</span></div>${a.kegiatan ? `<div style="font-size: 11px; color: #64748b; margin-top: 4px;"><i class="fas fa-tag"></i> ${a.kegiatan.substring(0, 30)}</div>` : ""}</div>
+    <div class="ranking-item">
+      <div class="rank-number" style="background: #10b981;">✓</div>
+      <div class="rank-info">
+        <h4>${a.memberName}</h4>
+        <div class="rank-stats"><span><i class="fas fa-clock"></i> ${a.time}</span><span><i class="fas fa-calendar"></i> ${a.date.split(",")[0]}</span></div>
+        ${a.kegiatan ? `<div class="rank-stats"><span><i class="fas fa-tag"></i> ${a.kegiatan.substring(0, 30)}</span></div>` : ""}
+      </div>
     </div>
   `).join(""); 
 }
@@ -743,12 +754,13 @@ function generatePDFWithKegiatan(data) {
   doc.rect(0, 0, 210, 45, "F"); 
   doc.setTextColor(255, 255, 255); 
   doc.setFontSize(18); 
-  doc.text("LAPORAN ABSENSI IRMANUFA", 105, 20, { align: "center" }); 
+  doc.text("LAPORAN ABSENSI IRMANUFA", 105, 22, { align: "center" }); 
   doc.setFontSize(12); 
-  doc.text(`Kegiatan: ${AppState.currentKegiatan}`, 105, 32, { align: "center" }); 
+  doc.text(`Kegiatan: ${AppState.currentKegiatan}`, 105, 34, { align: "center" }); 
   doc.setFontSize(10); 
-  doc.text(`Tanggal Cetak: ${formatDate()}`, 105, 40, { align: "center" }); 
-  let y = 55; 
+  doc.text(`Tanggal Cetak: ${formatDate()}`, 105, 44, { align: "center" }); 
+  
+  let y = 60; 
   doc.setFillColor(5, 150, 105); 
   doc.rect(10, y, 190, 8, "F"); 
   doc.setTextColor(255, 255, 255); 
@@ -759,6 +771,7 @@ function generatePDFWithKegiatan(data) {
   doc.text("Waktu", 170, y + 6); 
   y += 10; 
   doc.setTextColor(0, 0, 0); 
+  
   data.slice().reverse().forEach((item, i) => { 
     if (y > 270) { doc.addPage(); y = 20; } 
     doc.text(`${i + 1}`, 15, y + 4); 
@@ -954,8 +967,8 @@ function renderDashboard() {
       <div class="main-content">
         <div class="welcome-card"><div class="welcome-text"><h2>Selamat Datang, ${AppState.currentUser.name.split(" ")[0]}!</h2><p>Sistem Absensi Digital IRMANUFA</p><small><i class="fas fa-qrcode"></i> Scan QR Code | <i class="fas fa-check-circle"></i> Hanya anggota AKTIF</small></div><div class="date-info"><div class="time" id="currentTime">${formatTime()}</div><div class="date" id="currentDate">${formatDate()}</div></div></div>
         <section id="dashboardSection" class="content-section active"><div class="stats-grid"><div class="stat-card"><div class="stat-icon"><i class="fas fa-users"></i></div><div class="stat-number" id="activeMembers">${stats.activeMembers}</div><div class="stat-label">Anggota Aktif</div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-calendar-day"></i></div><div class="stat-number" id="todayCount">${stats.todayCount}</div><div class="stat-label">Hadir Hari Ini</div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-chart-line"></i></div><div class="stat-number" id="totalAttendance">${stats.totalAttendance}</div><div class="stat-label">Total Absensi</div></div></div><div class="card"><div class="card-header"><i class="fas fa-chart-line"></i><h3>Tren Absensi 7 Hari</h3></div><div class="chart-wrapper"><canvas id="attendanceChart"></canvas></div></div><div class="card"><div class="card-header"><i class="fas fa-chart-pie"></i><h3>Kehadiran per Divisi</h3><small>(Warna berbeda setiap divisi)</small></div><div class="chart-wrapper"><canvas id="divisionChart"></canvas></div></div><div class="card"><div class="card-header"><i class="fas fa-trophy"></i><h3>Top 5 Terrajin</h3></div><div id="topMembersList" class="ranking-list"></div></div><div class="card"><div class="card-header"><i class="fas fa-history"></i><h3>Absensi Terbaru</h3></div><div id="recentAttendanceList" class="ranking-list"></div></div></section>
-        <section id="scannerSection" class="content-section"><div class="card"><div class="card-header"><i class="fas fa-qrcode"></i><h3>Scan QR Code</h3><small>Arahkan kamera ke QR Code</small></div><div class="scanner-header"><button id="flashToggleBtn" class="flash-btn" onclick="toggleFlash()"><i class="fas fa-lightbulb"></i> Flash OFF</button></div><div class="scanner-container"><div id="reader" class="empty-state"><i class="fas fa-camera"></i><p>Scanner siap. Klik "Mulai Scan"</p></div></div><div class="action-buttons"><button class="btn btn-primary" onclick="startScanner()"><i class="fas fa-play"></i> Mulai Scan</button><button class="btn btn-danger" onclick="stopScanner()"><i class="fas fa-stop"></i> Hentikan</button></div></div><div class="card"><div class="card-header"><i class="fas fa-table"></i><h3>Hasil Scan Hari Ini</h3><small>Klik Edit/Hapus untuk mengubah data</small></div><div id="todayScanHistory"></div></div><div class="info-card"><i class="fas fa-info-circle"></i> <strong>Info:</strong><ol><li>Klik "Mulai Scan" → Izinkan kamera</li><li>Arahkan ke QR Code anggota</li><li>Suara "berhasil.mp3" jika berhasil</li><li>Suara "sudah.mp3" jika sudah absen</li><li>Suara "takkenal.mp3" jika tidak dikenali</li><li>Edit/Hapus data di tabel atas</li></ol></div></section>
-        <section id="generatorSection" class="content-section"><div class="card"><div class="card-header"><i class="fas fa-print"></i><h3>Cetak QR Code</h3><small>Pilih anggota untuk generate QR Code</small></div><div class="qr-generator-grid"><div class="qr-card-preview"><div class="qr-display" id="qrCodeDisplay"><i class="fas fa-qrcode" style="font-size: 80px; color: #94a3b8;"></i><p style="margin-top:10px;">Pilih anggota dan klik Generate</p></div><div class="download-buttons"><button class="btn btn-primary" onclick="downloadQRAsPNG()"><i class="fas fa-image"></i> PNG HD</button><button class="btn btn-success" onclick="downloadQRAsPDF()"><i class="fas fa-file-pdf"></i> PDF</button></div></div><div><select id="memberSelect" style="width:100%; padding: 14px; border-radius: 12px; border: 2px solid #e2e8f0;"><option value="">✨-- Pilih Anggota Aktif --✨</option></select><button class="btn btn-primary" style="width:100%; margin-top:16px;" onclick="generateMemberQR()"><i class="fas fa-qrcode"></i> Generate QR Code</button><div id="memberInfoDisplay" class="member-info-card" style="margin-top:16px;"><h4><i class="fas fa-info-circle"></i> Informasi</h4><p style="text-align:center;">Pilih anggota dan klik "Generate QR Code"</p></div></div></div></div></section>
+        <section id="scannerSection" class="content-section"><div class="card"><div class="card-header"><i class="fas fa-qrcode"></i><h3>Scan QR Code</h3><small>Arahkan kamera ke QR Code</small></div><div class="scanner-header"><button id="flashToggleBtn" class="flash-btn" onclick="toggleFlash()"><i class="fas fa-lightbulb"></i> Flash OFF</button></div><div class="scanner-container"><div id="reader" class="empty-state"><i class="fas fa-camera"></i><p>Scanner siap. Klik "Mulai Scan"</p></div></div><div class="action-buttons"><button class="btn btn-primary" onclick="startScanner()"><i class="fas fa-play"></i> Mulai Scan</button><button class="btn btn-danger" onclick="stopScanner()"><i class="fas fa-stop"></i> Hentikan</button></div></div><div class="card"><div class="card-header"><i class="fas fa-table"></i><h3>Hasil Scan Hari Ini</h3><small>Klik Edit/Hapus untuk mengubah data</small></div><div id="todayScanHistory"></div></div><div class="info-card"><i class="fas fa-info-circle"></i> <strong>Cara Penggunaan:</strong><ol><li>Klik "Mulai Scan" → Izinkan kamera</li><li>Arahkan ke QR Code anggota</li><li>Suara "berhasil.mp3" jika berhasil</li><li>Suara "sudah.mp3" jika sudah absen</li><li>Suara "takkenal.mp3" jika tidak dikenali</li><li>Edit/Hapus data di tabel atas</li></ol></div></section>
+        <section id="generatorSection" class="content-section"><div class="card"><div class="card-header"><i class="fas fa-print"></i><h3>Cetak QR Code</h3><small>Pilih anggota untuk generate QR Code</small></div><div class="qr-generator-grid"><div class="qr-card-preview"><div class="qr-display" id="qrCodeDisplay"><i class="fas fa-qrcode" style="font-size: 80px; color: #94a3b8;"></i><p>Pilih anggota dan klik Generate</p></div><div class="download-buttons"><button class="btn btn-primary" onclick="downloadQRAsPNG()"><i class="fas fa-image"></i> PNG HD</button><button class="btn btn-success" onclick="downloadQRAsPDF()"><i class="fas fa-file-pdf"></i> PDF</button></div></div><div><select id="memberSelect" style="width:100%; padding: 14px; border-radius: 14px; border: 2px solid #e2e8f0;"><option value="">✨-- Pilih Anggota Aktif --✨</option></select><button class="btn btn-primary" style="width:100%; margin-top:16px;" onclick="generateMemberQR()"><i class="fas fa-qrcode"></i> Generate QR Code</button><div id="memberInfoDisplay" class="member-info-card" style="margin-top:16px;"><h4><i class="fas fa-info-circle"></i> Informasi</h4><p style="text-align:center;">Pilih anggota dan klik "Generate QR Code"</p></div></div></div></div></section>
         <section id="membersSection" class="content-section"><div class="card"><div class="card-header"><i class="fas fa-users"></i><h3>Data Anggota</h3><small>Total: ${AppState.members.length} (${activeCount} Aktif, ${passiveCount} Pasif)</small><div style="margin-left:auto;"><button class="btn btn-secondary btn-sm" onclick="resetMembersToDefault()"><i class="fas fa-undo"></i> Reset</button> <button class="btn btn-primary btn-sm" onclick="showAddMemberModal()"><i class="fas fa-plus"></i> Tambah</button></div></div><div class="search-box"><input type="text" id="memberSearch" placeholder="Cari nama/kode/divisi..." onkeyup="renderMemberTable(this.value)"></div><div class="table-container"><table class="data-table"><thead><tr><th>Kode</th><th>Nama</th><th>Divisi</th><th>Jabatan</th><th>Status</th><th>Hari Ini</th><th>Aksi</th></tr></thead><tbody id="memberTableBody"></tbody></table></div></div></section>
         <section id="reportsSection" class="content-section"><div class="card"><div class="card-header"><i class="fas fa-chart-line"></i><h3>Laporan Absensi</h3></div><div class="kegiatan-input"><label><i class="fas fa-tag"></i> Nama Kegiatan</label><input type="text" id="kegiatanName"></div><div class="report-header"><div class="report-date"><label>Dari</label><input type="date" id="startDate"><label>Sampai</label><input type="date" id="endDate"></div></div><div class="action-buttons"><button class="btn btn-primary" onclick="generateReport()"><i class="fas fa-file-pdf"></i> PDF</button><button class="btn btn-success" onclick="exportToExcel()"><i class="fas fa-file-excel"></i> Excel</button><button class="btn btn-info" onclick="showWhatsAppModal()"><i class="fab fa-whatsapp"></i> WhatsApp</button><button class="btn btn-danger" onclick="resetAllData()"><i class="fas fa-trash"></i> Reset Absensi</button></div></div><div class="stats-grid"><div class="stat-card"><div class="stat-icon"><i class="fas fa-database"></i></div><div class="stat-number">${AppState.attendance.length}</div><div class="stat-label">Total Data</div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-qrcode"></i></div><div class="stat-number">${AppState.attendance.filter(a => a.method === "qr").length}</div><div class="stat-label">QR Code</div></div><div class="stat-card"><div class="stat-icon"><i class="fas fa-user-check"></i></div><div class="stat-number">${new Set(AppState.attendance.map(a => a.memberId)).size}</div><div class="stat-label">Pernah Absen</div></div></div></section>
       </div>
@@ -995,17 +1008,17 @@ function renderLoginPage() {
         <div class="login-logo"><div class="logo-icon"><i class="fas fa-mosque"></i></div><h1>IRMANUFA QR Absensi</h1><p>Sistem Absensi Digital Berbasis QR Code</p></div>
         <div class="user-selector">
           <div id="user-admin" class="user-option active" onclick="selectUser('admin')">
-            <img src="admin.png" alt="Admin" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:60px; height:60px; border-radius:50%; background:#e2e8f0; margin:0 auto 10px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-tie\" style=\"font-size: 32px; color:#64748b;\"></i></div>'">
+            <img src="admin.png" alt="Admin" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:55px; height:55px; border-radius:50%; background:#e2e8f0; margin:0 auto 8px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-tie\" style=\"font-size: 28px; color:#64748b;\"></i></div>'">
             <div class="user-name">Admin</div>
             <div class="user-role">Super Admin</div>
           </div>
           <div id="user-tasya" class="user-option" onclick="selectUser('tasya')">
-            <img src="tasya.png" alt="Tasya Amelia" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:60px; height:60px; border-radius:50%; background:#e2e8f0; margin:0 auto 10px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-circle\" style=\"font-size: 32px; color:#64748b;\"></i></div>'">
+            <img src="tasya.png" alt="Tasya Amelia" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:55px; height:55px; border-radius:50%; background:#e2e8f0; margin:0 auto 8px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-circle\" style=\"font-size: 28px; color:#64748b;\"></i></div>'">
             <div class="user-name">Tasya Amelia</div>
             <div class="user-role">Sekretaris I</div>
           </div>
           <div id="user-lidya" class="user-option" onclick="selectUser('lidya')">
-            <img src="lidya.png" alt="Lidya Febrianti" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:60px; height:60px; border-radius:50%; background:#e2e8f0; margin:0 auto 10px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-circle\" style=\"font-size: 32px; color:#64748b;\"></i></div>'">
+            <img src="lidya.png" alt="Lidya Febrianti" onerror="this.onerror=null; this.parentElement.innerHTML='<div style=\"width:55px; height:55px; border-radius:50%; background:#e2e8f0; margin:0 auto 8px; display:flex; align-items:center; justify-content:center;\"><i class=\"fas fa-user-circle\" style=\"font-size: 28px; color:#64748b;\"></i></div>'">
             <div class="user-name">Lidya Febrianti</div>
             <div class="user-role">Sekretaris II</div>
           </div>
